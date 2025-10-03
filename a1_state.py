@@ -59,7 +59,7 @@ class State:
                     temp_grid[r][c] = 0
                     temp_state = State(temp_grid)
                     
-                    if temp_state.numRegions() > initial_regions:
+                    if temp_state.numRegions() != initial_regions:
                         hinger += 1
         return hinger
             
