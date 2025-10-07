@@ -32,6 +32,16 @@ def dfs_path(start, end):
     
     return None
 
+def path_astar(start, end):
+    open_list = list()
+    closed_list = list()
+    open_list.append((start, 0, []))
+
+    while not open_list:
+        #
+
+
+
 def dfs_tester():
     start_grid = [
             [1, 1, 1, 0, 2],
