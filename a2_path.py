@@ -3,7 +3,7 @@ import copy
 
 def dfs_path(start, end):
     stack = [(copy.deepcopy(start), [])]
-    visited = set() #set is faster than list
+    visited = list() #switched back to list because it wasnt working
     
     while stack:
         (state, path) = stack.pop()
@@ -19,7 +19,7 @@ def dfs_path(start, end):
             #     grid[move[0]][move[1]] -= 1
             #btw this remakes the grid each time, we dont need this i think
 
-            for move in State(state).move():
+            for move in State(state).moves():
                 new_grid = copy.deepcopy(state)
                 new_grid[move[0]][move[1]] -= 1
 
@@ -27,7 +27,7 @@ def dfs_path(start, end):
 
                 if new_grid_tuple not in visited:
                     if State(new_grid).numHingers() == 0: #only add to stack if no hingers are created
-                        visited.add(new_grid_tuple)
+                        visited.append(new_grid_tuple)
                         stack.append((new_grid, path + [move]))
     
     return None
