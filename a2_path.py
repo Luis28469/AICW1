@@ -1,6 +1,6 @@
 from a1_state import State
 import copy
-
+import heapq
 def dfs_path(start, end):
     stack = [(copy.deepcopy(start), [])]
     visited = list() #switched back to list because it wasnt working
@@ -10,7 +10,7 @@ def dfs_path(start, end):
         if state not in visited:
             
             if state == end:
-                print("Path to goal:", path)
+                print(f"DFS found a path with {len(path)} moves: {path}")
                 return path
 
             # grid = copy.deepcopy(start)
@@ -31,14 +31,56 @@ def dfs_path(start, end):
                         stack.append((new_grid, path + [move]))
     
     return None
+def heuristic(current_grid, end_grid):
+    diff = 0
+    rows = len(current_grid)
+    cols = len(current_grid[0]) if rows > 0 else 0
+    for r in range(rows):
+        for c in range(cols):
+            if current_grid[r][c] != end_grid[r][c]:
+                diff += 1
+    return diff
 
 def path_astar(start, end):
-    open_list = list()
-    closed_list = list()
-    open_list.append((start, 0, []))
+    start_state = State(start)
+    end_state = State(end)
 
-    while not open_list:
-        #
+    open_list = [(0, 0, [], start_state)]
+    heapq.heapify(open_list)
+    closed_list = list()
+
+    while open_list:
+        f_cost, g_cost, path, current_state = heapq.heappop(open_list)
+        
+        if current_state.grid in closed_list:
+            continue
+
+        if current_state.grid == end_state.grid:
+            return path
+            
+        closed_list.append(current_state.grid)
+
+        #Explore neighbors (next possible moves)
+        for move in current_state.moves():
+            next_grid = copy.deepcopy(current_state.grid)
+            next_grid[move[0]][move[1]] -= 1
+            next_state = State(next_grid)
+            
+            #Skip this path if we've already explored this state
+            if next_state.grid in closed_list:
+                continue
+
+            #Check the safe path condition
+            if next_state.numHingers() == 0:
+                #Calculate costs for the new node
+                new_g_cost = g_cost + 1 #Cost of each move is 1
+                h_cost = heuristic(next_state.grid, end_state.grid)
+                new_f_cost = new_g_cost + h_cost
+                #Add the new node to the open list and the visited list
+                new_path = path + [move]
+                heapq.heappush(open_list, (new_f_cost, new_g_cost, new_path, next_state))
+
+    return None
 
 
 
@@ -58,6 +100,12 @@ def dfs_tester():
         ]
     
     path = dfs_path(start_grid, goal_grid)
+    path = path_astar(start_grid, goal_grid)
+    
+    if path:
+        print(f"A* found a path with {len(path)} moves: {path}")
+    else:
+        print("A* couldn't find a safe path.")
 
 if __name__ == "__main__":
     dfs_tester()
