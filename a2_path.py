@@ -1,11 +1,12 @@
 from a1_state import State
 import copy
 import heapq
+from collections import deque
 
-def bfs(start_state, end_state):
+def path_BFS(start, end):
 
-    start_state = State(start_state)
-    end_state = State(end_state)
+    start_state = State(start)
+    end_state = State(end)
     #Validation to confirm there is not already a hinger in the states
     if start_state.numHingers() > 0 or end_state.numHingers() > 0:
         print("There is a hinger")
@@ -44,7 +45,7 @@ def bfs(start_state, end_state):
     return None
 
 
-def dfs_path(start, end):
+def path_DFS(start, end):
     stack = [(copy.deepcopy(start), [])]
     visited = set()
     visited.add(tuple(map(tuple, start))) #convert to tuple as it is hashable now
@@ -76,7 +77,7 @@ def dfs_path(start, end):
         
     return None
 
-def dls_path(start, end, limit):
+def path_dls(start, end, limit):
     stack = [(copy.deepcopy(start), [], 0)]  # (state, path, depth)
     visited = set()
 
@@ -105,10 +106,11 @@ def dls_path(start, end, limit):
     return None
 
 
-def iddfs_path(start, end, max_depth):
+def path_IDDFS(start, end):
+    max_depth = 20
     for depth in range(max_depth + 1): #try depth from 0 to max_depth
         print(f"Trying depth limit: {depth}")
-        path = dls_path(start, end, depth)
+        path = (start, end, depth)
         if path is not None:
             print(f"IDDFS found a path at depth {depth}")
             return path
@@ -169,7 +171,7 @@ def path_astar(start, end):
 
 
 
-def dfs_tester():
+def tester():
     start_grid = [
             [1, 1, 1, 0, 2],
             [1, 1, 0, 0, 0],
@@ -184,17 +186,24 @@ def dfs_tester():
             [0, 0, 0, 1, 1]
         ]
     
-    print(State(start_grid).numHingers())
-    print(State(start_grid).numRegions())
 
-    
-    path = dfs_path(start_grid, goal_grid)
+    bfs_path = path_BFS(start_grid, goal_grid)
+    dfs_path = path_DFS(start_grid, goal_grid)
+    iddfs_path = path_IDDFS(start_grid, goal_grid)
     a_path = path_astar(start_grid, goal_grid)
+
+    list_of_paths = {
+        "BFS" : bfs_path, 
+        "DFS" : dfs_path, 
+        "IDDFS" : iddfs_path, 
+        "A-Star" : a_path
+        }
     
-    if a_path:
-        print(f"A* found a path with {len(a_path)} moves: {a_path}")
-    else:
-        print("A* couldn't find a safe path.")
+    for name, path in list_of_paths.items():
+        if path:
+            print(f"{name} found a path with {len(path)} moves: {path}")
+        else:
+            print(f"{name} couldn't find a safe path.")
 
 if __name__ == "__main__":
     dfs_tester()
