@@ -3,33 +3,34 @@ import copy
 import heapq
 def dfs_path(start, end):
     stack = [(copy.deepcopy(start), [])]
-    visited = list() #switched back to list because it wasnt working
+    visited = set()
+    visited.add(tuple(map(tuple, start))) #convert to tuple as it is hashable now
     
     while stack:
         (state, path) = stack.pop()
-        if state not in visited:
             
-            if state == end:
-                print(f"DFS found a path with {len(path)} moves: {path}")
-                return path
+            
+        if state == end:
+            print(f"DFS found a path with {len(path)} moves: {path}")
+            return path
 
-            # grid = copy.deepcopy(start)
+        # grid = copy.deepcopy(start)
 
-            # for move in path: #apply the path to the grid so far
-            #     grid[move[0]][move[1]] -= 1
-            #btw this remakes the grid each time, we dont need this i think
+        # for move in path: #apply the path to the grid so far
+        #     grid[move[0]][move[1]] -= 1
+        #btw this remakes the grid each time, we dont need this i think
 
-            for move in State(state).moves():
-                new_grid = copy.deepcopy(state)
-                new_grid[move[0]][move[1]] -= 1
+        for move in State(state).moves():
+            new_grid = copy.deepcopy(state)
+            new_grid[move[0]][move[1]] -= 1
 
-                new_grid_tuple = tuple(map(tuple, new_grid))
+            new_grid_tuple = tuple(map(tuple, new_grid))
 
-                if new_grid_tuple not in visited:
-                    if State(new_grid).numHingers() == 0: #only add to stack if no hingers are created
-                        visited.append(new_grid_tuple)
-                        stack.append((new_grid, path + [move]))
-    
+            if new_grid_tuple not in visited:
+                if State(new_grid).numHingers() == 0: #only add to stack if no hingers are created
+                    visited.add(new_grid_tuple)
+                    stack.append((new_grid, path + [move]))
+        
     return None
 def heuristic(current_grid, end_grid):
     diff = 0
@@ -47,27 +48,29 @@ def path_astar(start, end):
 
     open_list = [(0, 0, [], start_state)]
     heapq.heapify(open_list)
-    closed_list = list()
+    closed_list = set()
 
     while open_list:
         f_cost, g_cost, path, current_state = heapq.heappop(open_list)
-        
-        if current_state.grid in closed_list:
+        current_grid_tuple = tuple(map(tuple, current_state.grid))
+
+        if current_grid_tuple in closed_list:
             continue
 
         if current_state.grid == end_state.grid:
             return path
             
-        closed_list.append(current_state.grid)
+        closed_list.add(current_grid_tuple)
 
         #Explore neighbors (next possible moves)
         for move in current_state.moves():
             next_grid = copy.deepcopy(current_state.grid)
             next_grid[move[0]][move[1]] -= 1
             next_state = State(next_grid)
-            
+            next_grid_tuple = tuple(map(tuple, next_state.grid))
+
             #Skip this path if we've already explored this state
-            if next_state.grid in closed_list:
+            if next_grid_tuple in closed_list:
                 continue
 
             #Check the safe path condition
@@ -93,17 +96,17 @@ def dfs_tester():
         ]
     
     goal_grid = [
-            [0, 0, 0, 0, 2],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 1, 1],
-            [0, 0, 0, 1, 1]
+            [1, 1, 1, 0, 0],
+            [1, 1, 0, 0, 0],
+            [1, 0, 0, 0, 0],
+            [1, 0, 0, 0, 0]
         ]
     
     path = dfs_path(start_grid, goal_grid)
-    path = path_astar(start_grid, goal_grid)
+    a_path = path_astar(start_grid, goal_grid)
     
-    if path:
-        print(f"A* found a path with {len(path)} moves: {path}")
+    if a_path:
+        print(f"A* found a path with {len(a_path)} moves: {a_path}")
     else:
         print("A* couldn't find a safe path.")
 
