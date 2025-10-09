@@ -2,6 +2,47 @@ from a1_state import State
 import copy
 import heapq
 
+def bfs(start_state, end_state):
+
+    start_state = State(start_state)
+    end_state = State(end_state)
+    #Validation to confirm there is not already a hinger in the states
+    if start_state.numHingers() > 0 or end_state.numHingers() > 0:
+        print("There is a hinger")
+        return None
+    
+    start_grid_tuple = tuple(map(tuple, start_state.grid))
+    end_grid_tuple = tuple(map(tuple, end_state.grid))
+    
+    #Data structures
+    queue = deque([(start_state, [])])
+    visited = {start_grid_tuple}
+    
+    while queue:
+        current_state, path = queue.popleft()
+
+        current_grid_tuple = tuple(map(tuple, current_state.grid))
+
+        if current_grid_tuple == end_grid_tuple:
+            print("path: ", path)
+            return path
+
+        for r, c in current_state.moves():
+            temp_grid = copy.deepcopy(current_state.grid)
+            temp_grid[r][c] = 0
+            next_state = State(temp_grid)
+            
+            next_grid_tuple = tuple(map(tuple, next_state.grid))
+            
+            # Aplying the restrictions of a safe path
+            # The next state should not be a hinger and should not be already visited
+            if next_state.numHingers() == 0 and next_grid_tuple not in visited:
+                visited.add(next_grid_tuple)
+                new_path = path + [(r, c)]
+                queue.append((next_state, new_path))
+
+    return None
+
 
 def dfs_path(start, end):
     stack = [(copy.deepcopy(start), [])]
