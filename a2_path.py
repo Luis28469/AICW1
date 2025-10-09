@@ -1,6 +1,8 @@
 from a1_state import State
 import copy
 import heapq
+
+
 def dfs_path(start, end):
     stack = [(copy.deepcopy(start), [])]
     visited = list() #switched back to list because it wasnt working
@@ -31,6 +33,45 @@ def dfs_path(start, end):
                         stack.append((new_grid, path + [move]))
     
     return None
+
+def dls_path(start, end, limit):
+    stack = [(copy.deepcopy(start), [], 0)]  # (state, path, depth)
+    visited = set()
+
+    while stack:
+        state, path, depth = stack.pop()
+        state_tuple = tuple(map(tuple, state))
+
+        if state_tuple in visited:
+            continue
+        visited.add(state_tuple)
+
+        if state == end:
+            print(f"Found a path with {len(path)} moves: {path}")
+            return path
+
+        if depth < limit:  # Only proceed if we haven't reached the depth limit
+            for move in State(state).moves():
+                new_grid = copy.deepcopy(state)
+                new_grid[move[0]][move[1]] -= 1
+                new_grid_tuple = tuple(map(tuple, new_grid))
+
+                if new_grid_tuple not in visited:
+                    if State(new_grid).numHingers() == 0:
+                        stack.append((new_grid, path + [move], depth + 1))
+    
+    return None
+
+
+def iddfs_path(start, end, max_depth):
+    for depth in range(max_depth + 1): #try depth from 0 to max_depth
+        print(f"Trying depth limit: {depth}")
+        path = dls_path(start, end, depth)
+        if path is not None:
+            print(f"IDDFS found a path at depth {depth}")
+            return path
+    return None
+
 def heuristic(current_grid, end_grid):
     diff = 0
     rows = len(current_grid)
@@ -88,18 +129,23 @@ def dfs_tester():
     start_grid = [
             [1, 1, 1, 0, 2],
             [1, 1, 0, 0, 0],
-            [1, 0, 0, 1, 1],
+            [1, 1, 0, 1, 1],
             [1, 0, 0, 1, 1]
         ]
     
     goal_grid = [
-            [0, 0, 0, 0, 2],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 1, 1],
-            [0, 0, 0, 1, 1]
+            [1, 1, 1, 0, 0],
+            [1, 1, 0, 0, 0],
+            [1, 1, 0, 1, 1],
+            [1, 0, 0, 0, 1]
         ]
     
+    print(State(start_grid).numHingers())
+    print(State(start_grid).numRegions())
+
+    
     path = dfs_path(start_grid, goal_grid)
+    path = iddfs_path(start_grid, goal_grid, max_depth=20)
     path = path_astar(start_grid, goal_grid)
     
     if path:
