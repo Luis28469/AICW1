@@ -148,7 +148,7 @@ def dfs_tester():
 
     
     path = dfs_path(start_grid, goal_grid)
-    path = path_astar(start_grid, goal_grid)
+    a_path = path_astar(start_grid, goal_grid)
     
     if a_path:
         print(f"A* found a path with {len(a_path)} moves: {a_path}")
