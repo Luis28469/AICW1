@@ -9,7 +9,6 @@ def path_BFS(start, end):
     end_state = State(end)
     #Validation to confirm there is not already a hinger in the states
     if start_state.numHingers() > 0 or end_state.numHingers() > 0:
-        print("There is a hinger")
         return None
     
     start_grid_tuple = tuple(map(tuple, start_state.grid))
@@ -25,7 +24,6 @@ def path_BFS(start, end):
         current_grid_tuple = tuple(map(tuple, current_state.grid))
 
         if current_grid_tuple == end_grid_tuple:
-            print("path: ", path)
             return path
 
         for r, c in current_state.moves():
@@ -55,7 +53,6 @@ def path_DFS(start, end):
             
             
         if state == end:
-            print(f"DFS found a path with {len(path)} moves: {path}")
             return path
 
         # grid = copy.deepcopy(start)
@@ -90,7 +87,6 @@ def path_dls(start, end, limit):
         visited.add(state_tuple)
 
         if state == end:
-            print(f"Found a path with {len(path)} moves: {path}")
             return path
 
         if depth < limit:  # Only proceed if we haven't reached the depth limit
@@ -107,12 +103,10 @@ def path_dls(start, end, limit):
 
 
 def path_IDDFS(start, end):
-    max_depth = 20
+    max_depth = sum(map(sum, start)) - sum(map(sum, end)) #maximum depth is the total of moves performed
     for depth in range(max_depth + 1): #try depth from 0 to max_depth
-        print(f"Trying depth limit: {depth}")
-        path = (start, end, depth)
+        path = path_dls(start, end, depth)
         if path is not None:
-            print(f"IDDFS found a path at depth {depth}")
             return path
     return None
 
@@ -206,4 +200,4 @@ def tester():
             print(f"{name} couldn't find a safe path.")
 
 if __name__ == "__main__":
-    dfs_tester()
+    tester()
