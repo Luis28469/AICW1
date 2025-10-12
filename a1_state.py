@@ -6,6 +6,8 @@ class State:
         self.grid = copy.deepcopy(grid)
         self.rows = len(grid)
         self.columns = len(grid[0]) if self.rows > 0 else 0
+        self.startRegions = self.numRegions()
+        self.last_move = None  # To who track the last move made
 
     def __str__(self):
         return "\n".join([" ".join(str(x) for x in row) for row in self.grid])
@@ -15,6 +17,30 @@ class State:
             for c in range(self.columns):
                 if self.grid[r][c] > 0:
                     yield (r, c)
+    
+    def get_winner(self):
+        if self.numRegions() > self.startRegions:
+            return self.last_move
+        
+        return None
+    
+    def is_terminal(self):
+        return self.get_winner() is not None or not self.moves()
+    
+    def evaluate(self, player):
+        winner = self.get_winner()
+        if winner == player:
+            return 1
+        elif winner is None:
+            return 0
+        return -1
+    
+    def make_move(self, r, c, player):
+        if self.grid[r][c] > 0:
+            self.grid[r][c] -= 1
+            self.last_move = player
+            return True
+        return False
 
     def get_adjacent_cells(self, r, c):
         positions = []
