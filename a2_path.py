@@ -1,5 +1,7 @@
 from a1_state import State
 import copy
+import time
+import tracemalloc
 import heapq
 from collections import deque
 
@@ -163,7 +165,36 @@ def path_astar(start, end):
 
     return None
 
+def compare():
+    start_grid = [
+            [1, 1, 1, 0, 2],
+            [1, 1, 0, 0, 0],
+            [1, 1, 0, 1, 1],
+            [1, 0, 0, 1, 1]
+        ]
+    
+    goal_grid = [
+            [0, 0, 0, 0, 2],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 1, 1],
+            [0, 0, 0, 1, 0]
+        ]
+    
+    algorithms = [("BFS", path_BFS), ("DFS", path_DFS), ("IDDFS", path_IDDFS), ("A*", path_astar)]
 
+    for name, algorithm in algorithms:
+        time_start = time.time()
+        tracemalloc.start()
+        path = algorithm(start_grid, goal_grid)
+        current, peak = tracemalloc.get_traced_memory()
+        tracemalloc.stop()
+        time_end = time.time()
+        if path:
+            print(f"{name} found a path.\nMoves: {len(path)}.\nTime: {time_end - time_start:.6f} seconds.\nMemory Peak: {peak / 10**6}MB\nPath: {path}\n\n")
+        else:
+            print(f"{name} couldn't find a safe path.\nTime used: {time_end - time_start:.6f} seconds.\nMemory Peak: {peak / 10**6}MB\n\n")
+    
+    
 
 def tester():
     start_grid = [
@@ -200,4 +231,4 @@ def tester():
             print(f"{name} couldn't find a safe path.")
 
 if __name__ == "__main__":
-    tester()
+    compare()
