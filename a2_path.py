@@ -112,6 +112,8 @@ def path_IDDFS(start, end):
             return path
     return None
 
+
+#This heuristic is admissible as it uses the Hamming distance, where it counts the number of tiles on the board that are different between the two states so it doesnt overestimate.  For each tile it will have to move at least once.
 def heuristic(current_grid, end_grid):
     diff = 0
     rows = len(current_grid)
@@ -194,7 +196,54 @@ def compare():
         else:
             print(f"{name} couldn't find a safe path.\nTime used: {time_end - time_start:.6f} seconds.\nMemory Peak: {peak / 10**6}MB\n\n")
     
-    
+def min_safe(start, end):
+    start_state = State(start)
+    end_state = State(end)
+    #the priority queue will store the total cost, path and current state
+    open_list = [(0, [], start_state)]
+    heapq.heapify(open_list)
+    #this stores minimjum cost found so far and updates the algorithm if a cheaper path is found
+    visited={tuple(map(tuple, start_state.grid)):0}
+
+    while open_list:
+        #get path with lowest total cost from priority queue
+        total_cost, path, current_state = heapq.heappop(open_list)
+        #for if the goal is reached, meaning this is the cheapest path
+        if current_state.grid == end_state.grid:
+            return path
+        for move in current_state.moves():
+            next_grid = copy.deepcopy(current_state.grid)
+            #calculates the cost for the move based on the current board state
+            move_cost = current_state.get_move_cost(move)
+            next_grid[move[0]][move[1]] -= 1
+            next_state = State(next_grid)
+            #check for hingers to make sure it remains safe
+            if next_state.numHingers() == 0:
+                new_total_cost = total_cost + move_cost
+                next_grid_tuple = tuple(map(tuple, next_state.grid))
+
+                #for if we havent seen this state or found cheaper path
+                if next_grid_tuple not in visited or new_total_cost < visited[next_grid_tuple]:
+                    visited[next_grid_tuple] = new_total_cost
+                    new_path = path + [move]
+                    heapq.heappush(open_list, (new_total_cost, new_path, next_state))
+
+    return None
+
+def calculate_path_cost(start_grid, path):
+    total_cost = 0
+    #create object that will be updated as we move
+    current_state = State(start_grid)
+    for move in path:
+        move_cost = current_state.get_move_cost(move)
+        total_cost += move_cost
+        #update the grid with the move to create the updated grid for the next move
+        new_grid = copy.deepcopy(current_state.grid)
+        new_grid[move[0]][move[1]] -= 1
+        current_state = State(new_grid)
+
+    return total_cost
+
 
 def tester():
     start_grid = [
@@ -230,5 +279,16 @@ def tester():
         else:
             print(f"{name} couldn't find a safe path.")
 
+    minsafe = min_safe(start_grid, goal_grid)
+    if minsafe:
+        total_cost = calculate_path_cost(start_grid, minsafe)
+        print (f"Minsafe found the cheapest path: {minsafe}")
+        print (f"Total cost: {total_cost}")
+    else:
+        print("Minsafe couldn't find a safe path.")
+
+
+
 if __name__ == "__main__":
     compare()
+    tester()

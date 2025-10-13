@@ -68,6 +68,15 @@ class State:
                         hinger += 1
         return hinger
 
+    def get_move_cost(self,move):
+        r,c = move
+        if self.grid[r][c] == 0:
+            return 0
+        
+        adjacent_active = sum(1 for nr, nc in self.get_adjacent_cells(r,c) if self.grid[nr][nc] > 0)
+
+        return 1 + adjacent_active 
+        
 def tester():
     state_a_grid = [
         [1, 1, 1, 0, 2],
