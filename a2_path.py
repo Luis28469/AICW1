@@ -179,7 +179,7 @@ def compare():
             [0, 0, 0, 0, 2],
             [0, 0, 0, 0, 0],
             [0, 0, 0, 1, 1],
-            [0, 0, 0, 1, 0]
+            [0, 0, 0, 1, 1]
         ]
     
     algorithms = [("BFS", path_BFS), ("DFS", path_DFS), ("IDDFS", path_IDDFS), ("A*", path_astar)]
@@ -196,6 +196,8 @@ def compare():
         else:
             print(f"{name} couldn't find a safe path.\nTime used: {time_end - time_start:.6f} seconds.\nMemory Peak: {peak / 10**6}MB\n\n")
     
+
+#this min safe function uses BFS but starting with the best move possible and then looking at the cost of next possible moves and choosing the cheapest.
 def min_safe(start, end):
     start_state = State(start)
     end_state = State(end)
