@@ -197,7 +197,7 @@ def compare():
             print(f"{name} couldn't find a safe path.\nTime used: {time_end - time_start:.6f} seconds.\nMemory Peak: {peak / 10**6}MB\n\n")
     
 
-#this min safe function uses BFS but starting with the best move possible and then looking at the cost of next possible moves and choosing the cheapest.
+#this min safe function uses Dijikstra's Algorithm and a Priority queue to explore paths that have lower cost even if it have more moves.
 def min_safe(start, end):
     start_state = State(start)
     end_state = State(end)
