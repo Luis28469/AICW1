@@ -73,15 +73,20 @@ def play(state, agent1, agent2):
 
 
 def tester():
-    start_grid = [
-        [1, 1, 1, 0, 2],
-        [1, 1, 0, 0, 0],
-        [1, 1, 0, 1, 1],
-        [1, 0, 0, 1, 1]
-    ]
+    # start_grid = [
+    #     [1, 1, 1, 0, 2],
+    #     [1, 1, 0, 0, 0],
+    #     [1, 1, 0, 1, 1],
+    #     [1, 0, 0, 1, 1]
+    # ]
+    rows, columns = 4, 5
+    #random grid
+    start_grid = [[random.choices([0, 1, 2, 3], weights=[0.4, 0.3, 0.2, 0.1 ], k=1)[0] for _ in range(columns)]
+        for _ in range(rows)]
+    
     game_state = State(start_grid)
-    agent1 = Agent(size=(4, 5), name="TestAgent1")
-    agent2 = Agent(size=(4, 5), name="TestAgent2")
+    agent1 = Agent(size=(4, 5), name="AIAgent1")
+    agent2 = Agent(size=(4, 5), name="AIAgent2")
     global Gamemode
     Gamemode = input("Select Game Mode: \n1. HUMAN VS HUMAN\n2. HUMAN VS AI\n3. AI VS AI\n")
     if Gamemode == "1":
