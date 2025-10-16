@@ -1,7 +1,6 @@
 from a1_state import State
 from a2_path import path_BFS, path_astar, path_IDDFS, path_DFS
 from a3_agent import Agent
-
 import random
 import copy
 
@@ -9,6 +8,8 @@ def get_human_move(state):
     while True:
         try:
             move_str = input("Enter a move (row,col): ")
+            if move_str == "exit":
+                exit()
             r_string, c_string = move_str.split(",")
             r, c = int(r_string.strip()), int(c_string.strip())
             #validate move
