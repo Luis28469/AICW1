@@ -25,6 +25,7 @@ def get_human_move(state):
 def play(state, agent1, agent2):
     #simulates a session
     players = [agent1, agent2]
+
     current_player_id = 0
     print("Starting Game\n")
     while True:
@@ -34,36 +35,39 @@ def play(state, agent1, agent2):
             print("Draw - All Cells Removed")
             return None
         
+        #get current player name (checking if its an agent or human)
         current_player = players[current_player_id]
-        current_player_object = players[current_player_id]
-        if current_player_object is None:
-            player_name="Human"
+        if isinstance(current_player, Agent):
+            player_name = current_player.name
         else:
-            player_name=current_player_object.name
-        
+            player_name=current_player
+
         print(f"IT IS {player_name}'s TURN\n")
         #num of regions prior to move
-        initial_regions = state.numRegions()
 
         move=None
-        if current_player is None:
+        if isinstance(current_player, str):
             move = get_human_move(state)
         else:
             print(f"AI Is Thinking...\n")
             move = current_player.move(state, mode= "alphabeta")
         
-        if move is None:
-            print(f"{player_name} Cannot find a move")
-            break
-            
-        print(f"{player_name} makes a move: {move}")
+
+
+        print(f"{player_name} makes a move: {move}") 
+        
 
         #apply move
         r,c = move
         #use new method
-        state.make_move(r,c,current_player_id) 
+        state.make_move(r,c,player_name) 
         #check if a player has won
-        if state.numRegions() > initial_regions:
+        # if state.numRegions() > initial_regions:
+        #     print("\nHINGER CREATED, GAME OVER")
+        #     print(f"\n{player_name} Wins!")
+        #     return player_name
+
+        if state.get_winner() is not None:
             print("\nHINGER CREATED, GAME OVER")
             print(f"\n{player_name} Wins!")
             return player_name
@@ -90,15 +94,19 @@ def tester():
     agent2 = Agent(size=(4, 5), name="AIAgent2")
     global Gamemode
     Gamemode = input("Select Game Mode: \n1. HUMAN VS HUMAN\n2. HUMAN VS AI\n3. AI VS AI\n")
+    
     if Gamemode == "1":
         #MODE 1
         print("MODE 1: HUMAN VS HUMAN")
-        winner = play(copy.deepcopy(game_state),None, None)
+        name1 = input("Enter Player 1 Name: ")
+        name2 = input("Enter Player 2 Name: ")
+        winner = play(copy.deepcopy(game_state),name1, name2)
         return winner
     if Gamemode == "2":
         #MODE 2
         print("\nMODE 2: HUMAN VS AI")
-        winner = play(copy.deepcopy(game_state),None, agent2)
+        name1 = input("Enter Player 1 Name: ")
+        winner = play(copy.deepcopy(game_state),name1, agent2)
         return winner
     if Gamemode == "3":
         #MODE 3

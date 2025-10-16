@@ -36,6 +36,7 @@ class State:
         return -1
     
     def make_move(self, r, c, player):
+        self.startRegions = self.numRegions()
         if self.grid[r][c] > 0:
             self.grid[r][c] -= 1
             self.last_move = player
