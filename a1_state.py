@@ -25,7 +25,7 @@ class State:
         return None
     
     def is_terminal(self):
-        return self.get_winner() is not None or not self.moves()
+        return self.get_winner() is not None or not list(self.moves())
     
     def evaluate(self, player):
         winner = self.get_winner()
