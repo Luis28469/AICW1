@@ -106,8 +106,9 @@ def is_safe_for_n_moves(initial_state, max_depth):
 
 #code for hard mode, changes the weighting of each cell in the grid to have a higher chance of having a number >1
 def hard_mode(rows,cols):
+    #up to 4 now, might change rates for balancing
     while True:
-        grid = [[random.choices([0, 1, 2, 3], weights=[0.15, 0.3, 0.35, 0.2], k=1)[0] for _ in range(cols)]for _ in range(rows)]
+        grid = [[random.choices([0, 1, 2, 3, 4], weights=[0.2, 0.3, 0.3, 0.18, 0.02], k=1)[0] for _ in range(cols)]for _ in range(rows)]
 
         initial_state = State(grid)
         
@@ -134,11 +135,14 @@ def tester():
 
     #select difficulty
     while True:
-        difficulty = input("Select Difficulty:\nEASY:1\nHARD:2\n")
+        difficulty = input("Select Difficulty:\nEASY:1\nMEDIUM:2\nHARD:3\nEnter Difficulty: ")
         if difficulty == "1":
             start_grid = [[random.choices([0, 1, 2, 3], weights=[0.4, 0.3, 0.25, 0.05 ], k=1)[0] for _ in range(columns)]for _ in range(rows)]
             break
         if difficulty == "2":
+            start_grid = [[random.choices([0, 1, 2, 3], weights=[0.3, 0.3, 0.3, 0.1 ], k=1)[0] for _ in range(columns)]for _ in range(rows)]
+            break
+        if difficulty == "3":
             print("Generating Hard Mode Grid...\n")
             start_grid = hard_mode(rows,columns)
             break
@@ -151,7 +155,7 @@ def tester():
     agent1 = Agent(size=(4, 5), name="AIAgent1")
     agent2 = Agent(size=(4, 5), name="AIAgent2")
     global Gamemode
-    Gamemode = input("Select Game Mode: \n1. HUMAN VS HUMAN\n2. HUMAN VS AI\n3. AI VS AI\n")
+    Gamemode = input("Select Game Mode: \n1. HUMAN VS HUMAN\n2. HUMAN VS AI\n3. AI VS AI\nEnter Game Mode: ")
     
     if Gamemode == "1":
         #MODE 1
