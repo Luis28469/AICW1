@@ -42,7 +42,7 @@ def play(state, agent1, agent2):
         else:
             player_name=current_player
 
-        print(f"IT IS {player_name}'s TURN\n")
+        print(f"\nIT IS {player_name}'s TURN\n")
         #num of regions prior to move
 
         move=None

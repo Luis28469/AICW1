@@ -10,7 +10,15 @@ class State:
         self.last_move = None  # To who track the last move made
 
     def __str__(self):
-        return "\n".join([" ".join(str(x) for x in row) for row in self.grid])
+        col_header = "    | " + " ".join(str(c) for c in range(self.columns))
+        separator = " ---|" + "-" * (self.columns * 2)
+        board_rows = []
+        for r in range(self.rows):
+            row_content = " ".join(str(self.grid[r][c]) for c in range(self.columns))
+            board_rows.append(f"r{r}  | {row_content}")
+        return f"      c o l u m n s\n{col_header}\n{separator}\n" + "\n".join(board_rows)
+
+        #return "\n".join([" ".join(str(x) for x in row) for row in self.grid])
 
     def moves(self):
         for r in range(self.rows):
