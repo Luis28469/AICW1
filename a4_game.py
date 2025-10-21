@@ -4,6 +4,52 @@ from a2_path import path_BFS, path_astar, path_IDDFS, path_DFS
 from a3_agent import Agent
 import random
 import copy
+import pygame
+import time
+import sys
+import threading
+
+
+#PYGAME SETUP
+pygame.init()
+pygame.mixer.init()
+SCREEN_WIDTH, SCREEN_HEIGHT = 1000,700
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("Hinger Game")
+font_small = pygame.font.Font("freesansbold.ttf", 20)
+font_medium = pygame.font.Font("freesansbold.ttf", 50)
+font_large = pygame.font.Font("freesansbold.ttf", 70)
+clock = pygame.time.Clock()
+
+
+try:
+    pop_sound = pygame.mixer.Sound("Pop.mp3")
+except pygame.error:
+    print("Pop.mp3 not found")
+    pop_sound = None
+
+try:
+    win_sound = pygame.mixer.Sound("gamewin.mp3")
+except pygame.error:
+    print("Win.mp3 not found")
+    win_sound = None
+
+#colours
+WHITE, BLACK, GRAY = (255, 255, 255), (0, 0, 0), (200, 200, 200)
+BLUE, RED, GREEN = (100, 149, 237), (255, 99, 71), (50, 205, 50)
+CELL_SIZE, MARGIN = 80, 10
+GRID_X_OFFSET, GRID_Y_OFFSET = 100, 150
+
+
+#NEW PYGAME FUNCTIONS
+
+#start here
+
+
+
+
+
+
 
 def get_human_move(state):
     while True:
@@ -23,7 +69,7 @@ def get_human_move(state):
         except (ValueError, IndexError):
             print("Invalid Move: Invalid format")
 
-def play(state, agent1, agent2, mode):
+def play(state, agent1, agent2, mode="alphabeta"):
     #simulates a session
     players = [agent1, agent2]
     current_player_id = 0
@@ -165,7 +211,7 @@ def tester():
     
     if Gamemode == "1":
         #MODE 1
-        print("MODE 1: HUMAN VS HUMAN")
+        print("\nMODE 1: HUMAN VS HUMAN")
         name1 = input("Enter Player 1 Name: ")
         name2 = input("Enter Player 2 Name: ")
         winner = play(copy.deepcopy(game_state),name1, name2)
@@ -174,8 +220,8 @@ def tester():
     elif Gamemode == "2":
         #MODE 2
         print("\nMODE 2: HUMAN VS AI")
-        name1 = input("Enter Player 1 Name: ")
-        mode = input("Select AI Mode:\n1. MINIMAX\n2. ALPHABETA\n3. MONTECARLO\nEnter Mode: ")
+        name1 = input("\nEnter Player 1 Name: ")
+        mode = input("Select AI Mode (1, 2 or 3):\n1. MINIMAX (Not Recommended)\n2. ALPHABETA\n3. MONTECARLO\nEnter Mode: ")
         if mode == "1":
             mode = "minimax"
         elif mode == "2":
@@ -188,7 +234,7 @@ def tester():
     elif Gamemode == "3":
         #MODE 3
         print("\nMODE 3: AI VS AI")
-        mode = input("Select AI Mode:\n1. MINIMAX\n2. ALPHABETA\n3. MONTECARLO\nEnter Mode: ")
+        mode = input("Select AI Mode (1, 2, or 3):\n1. MINIMAX (Not Recommended)\n2. ALPHABETA\n3. MONTECARLO\nEnter Mode: ")
         if mode == "1":
             mode = "minimax"
         elif mode == "2":
