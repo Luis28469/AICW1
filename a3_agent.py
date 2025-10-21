@@ -153,17 +153,28 @@ class Agent:
 def tester():
     initial_grid = [
             [1, 1, 1, 0, 2],
-            [1, 1, 0, 0, 0],
+            [1, 1, 1, 0, 0],
             [1, 1, 1, 1, 1],
             [1, 0, 0, 1, 1]
         ]
     
+    print("Agent Created:\n")
     state = State(initial_grid)
     agent = Agent((4, 5), "TestAgent")
     print(agent)
 
+    print("\n\nInitial Board State:\n")
+    print(state)
+
+    print("\nTesting Minimax Move Selection:")
     move = agent.move(state, mode="alphabeta")
     print(f"Chosen Move: {move}")
+
+    print("\nTesting Alpha-Beta Move Selection:")
+    move = agent.move(state, mode="alphabeta")
+    print(f"Chosen Move: {move}")
+
+    print("\nTesting Monte Carlo Move Selection:")
     move = agent.move(state, mode="montecarlo")
     print(f"Chosen Move: {move}")
 
