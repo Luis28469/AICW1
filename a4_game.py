@@ -168,9 +168,10 @@ def tester():
         print("MODE 1: HUMAN VS HUMAN")
         name1 = input("Enter Player 1 Name: ")
         name2 = input("Enter Player 2 Name: ")
-        winner = play(copy.deepcopy(game_state),name1, name2)
-        play_again()
-        return winner
+        #winner = play(copy.deepcopy(game_state),name1, name2)
+        #play_again()
+        #return winner
+        return game_state, name1, name2, mode
     elif Gamemode == "2":
         #MODE 2
         print("\nMODE 2: HUMAN VS AI")
@@ -182,9 +183,10 @@ def tester():
             mode = "alphabeta"
         elif mode == "3":
             mode = "montecarlo"
-        winner = play(copy.deepcopy(game_state),name1, agent2, mode)
-        play_again()
-        return winner
+        #winner = play(copy.deepcopy(game_state),name1, agent2, mode)
+        #play_again()
+        #return winner
+        return game_state, name1, agent2, mode
     elif Gamemode == "3":
         #MODE 3
         print("\nMODE 3: AI VS AI")
@@ -195,12 +197,14 @@ def tester():
             mode = "alphabeta"
         elif mode == "3":
             mode = "montecarlo"
-        winner = play(copy.deepcopy(game_state),agent1, agent2, mode)
-        play_again()
-        return winner
+        #winner = play(copy.deepcopy(game_state),agent1, agent2, mode)
+        #play_again()
+        #return winner
+        return game_state, agent1, agent2, mode
             
     else:
         print("Invalid Input")
+        return None, None, None, None #Return none if setup fails
 
 
 if __name__ == "__main__":
