@@ -23,10 +23,9 @@ def get_human_move(state):
         except (ValueError, IndexError):
             print("Invalid Move: Invalid format")
 
-def play(state, agent1, agent2):
+def play(state, agent1, agent2, mode):
     #simulates a session
     players = [agent1, agent2]
-
     current_player_id = 0
     print("Starting Game\n")
     while True:
@@ -51,8 +50,8 @@ def play(state, agent1, agent2):
             move = get_human_move(state)
         else:
             print(f"AI Is Thinking...\n")
-            move = current_player.move(state, mode= "alphabeta")
-        
+            #move = current_player.move(state, mode= "montecarlo") #change between alphabeta and montecarlo        
+            move = current_player.move(state, mode) #change between alphabeta and montecarlo        
 
 
         print(f"{player_name} makes a move: {move}") 
@@ -105,19 +104,26 @@ def is_safe_for_n_moves(initial_state, max_depth):
 
 
 #code for hard mode, changes the weighting of each cell in the grid to have a higher chance of having a number >1
-def hard_mode(rows,cols):
+def hard_mode(rows,columns):
     #up to 4 now, might change rates for balancing
     while True:
-        grid = [[random.choices([0, 1, 2, 3, 4], weights=[0.2, 0.3, 0.3, 0.18, 0.02], k=1)[0] for _ in range(cols)]for _ in range(rows)]
+        grid = [[random.choices([0, 1, 2, 3, 4], weights=[0.2, 0.3, 0.3, 0.18, 0.02], k=1)[0] for _ in range(columns)]for _ in range(rows)]
 
         initial_state = State(grid)
         
-        if is_safe_for_n_moves(initial_state, 3):
+        if is_safe_for_n_moves(initial_state, 3): #change the integer to change the number of moves checked to not have a hinger state
             print("------------------")
             print("Safe Grid Found! Starting Game")
             print("------------------\n")
             return grid
 
+def play_again():
+    while True:
+        play_again = input("Play Again? (Y/N): ")
+        if play_again.lower() == "y":
+            tester()
+        elif play_again.lower() == "n":
+            return False
 
 
 
@@ -135,7 +141,7 @@ def tester():
 
     #select difficulty
     while True:
-        difficulty = input("Select Difficulty:\nEASY:1\nMEDIUM:2\nHARD:3\nEnter Difficulty: ")
+        difficulty = input("\nSelect Difficulty:\nEASY:1\nMEDIUM:2\nHARD:3\nEnter Difficulty: ")
         if difficulty == "1":
             start_grid = [[random.choices([0, 1, 2, 3], weights=[0.4, 0.3, 0.25, 0.05 ], k=1)[0] for _ in range(columns)]for _ in range(rows)]
             break
@@ -163,18 +169,36 @@ def tester():
         name1 = input("Enter Player 1 Name: ")
         name2 = input("Enter Player 2 Name: ")
         winner = play(copy.deepcopy(game_state),name1, name2)
+        play_again()
         return winner
     elif Gamemode == "2":
         #MODE 2
         print("\nMODE 2: HUMAN VS AI")
         name1 = input("Enter Player 1 Name: ")
-        winner = play(copy.deepcopy(game_state),name1, agent2)
+        mode = input("Select AI Mode:\n1. MINIMAX\n2. ALPHABETA\n3. MONTECARLO\nEnter Mode: ")
+        if mode == "1":
+            mode = "minimax"
+        elif mode == "2":
+            mode = "alphabeta"
+        elif mode == "3":
+            mode = "montecarlo"
+        winner = play(copy.deepcopy(game_state),name1, agent2, mode)
+        play_again()
         return winner
     elif Gamemode == "3":
         #MODE 3
         print("\nMODE 3: AI VS AI")
-        winner = play(copy.deepcopy(game_state),agent1, agent2)
+        mode = input("Select AI Mode:\n1. MINIMAX\n2. ALPHABETA\n3. MONTECARLO\nEnter Mode: ")
+        if mode == "1":
+            mode = "minimax"
+        elif mode == "2":
+            mode = "alphabeta"
+        elif mode == "3":
+            mode = "montecarlo"
+        winner = play(copy.deepcopy(game_state),agent1, agent2, mode)
+        play_again()
         return winner
+            
     else:
         print("Invalid Input")
 
