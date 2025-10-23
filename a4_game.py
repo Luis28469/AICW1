@@ -296,6 +296,7 @@ def play(state, agent1, agent2, mode="alphabeta"):
 
             #switch players
             current_player_id = (current_player_id + 1) % 2
+            time.sleep(0.5) #deliberate pause so sound can catch up properly
 
 
 
