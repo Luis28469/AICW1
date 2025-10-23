@@ -272,6 +272,8 @@ def play(state, agent1, agent2, mode="alphabeta"):
                 draw_text(f"{player_name} is thinking...", font_medium, GREEN, SCREEN_WIDTH / 2, 60)
             pygame.display.flip()
             move = current_player.move(state, mode=mode) #change between modes
+            time.sleep(0.3) #deliberate pause so sound can catch up properly
+
 
         if move:
             if pop_sound: #play pop sound
@@ -296,7 +298,6 @@ def play(state, agent1, agent2, mode="alphabeta"):
 
             #switch players
             current_player_id = (current_player_id + 1) % 2
-            time.sleep(0.3) #deliberate pause so sound can catch up properly
 
 
 
