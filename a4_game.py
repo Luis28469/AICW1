@@ -1,3 +1,14 @@
+"""
+Hinger Project
+Coursework 001 for: CMP-6058A Artificial Intelligence
+
+Includes the core gameplay loop and GUI
+
+@author: B5 (100530015, 100531901, and 100418808)
+@date:   30/10/2025
+
+"""
+
 from collections import deque
 from a1_state import State
 from a2_path import path_BFS, path_astar, path_IDDFS, path_DFS

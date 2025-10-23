@@ -1,4 +1,14 @@
-#DON FORGET THE HEADER WE HAVE TO USE
+"""
+Hinger Project
+Coursework 001 for: CMP-6058A Artificial Intelligence
+
+Includes an Agent class for Task 3
+
+@author: B5 (100530015, 100531901, and 100418808)
+@date:   30/10/2025
+
+"""
+
 from a1_state import State
 import copy
 import random
