@@ -437,7 +437,7 @@ def tester():
                 name1 = name1[:10] #limit name length
             name2 = get_text_input("Enter Player 2 Name: ") or "Player 2"
             if len(name2) > 10:
-                name2 = name1[:10] #limit name length
+                name2 = name2[:10] #limit name length
             players = [name1, name2]
             #winner = play(copy.deepcopy(game_state),name1, name2)
             #play_again()
