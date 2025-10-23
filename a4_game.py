@@ -30,7 +30,7 @@ except pygame.error:
     pop_sound = None
 
 try:
-    draw_sound = pygame.mixer.Sound("Draw.wav")
+    draw_sound = pygame.mixer.Sound("Draw.WAV")
 except pygame.error:
     print("Draw.wav not found")
     draw_sound = None
@@ -471,7 +471,7 @@ def tester():
         if winner and winner != "Draw" and win_sound:
             win_sound.play()
         elif winner == "Draw" and draw_sound:
-            draw_sound.play()
+            draw_sound.play() #doesnt work at the moment
 
         #player name for game over screen
         p1name = players[0] if isinstance(players[0], str) else players[0].name
