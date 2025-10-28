@@ -14,6 +14,7 @@ import copy
 import random
 import math
 
+#Class for MCTS nodes
 class Node:
     def __init__(self, state, parent=None, move=None):
         self.state = state
@@ -24,9 +25,11 @@ class Node:
         self.children = []
         self.moves = list(state.moves())  # Remaining moves to explore
 
+    #Check if node is fully expanded
     def is_fully_expanded(self):
         return len(self.moves) == 0
     
+    #Select the best child node using UCT
     def best_child(self, c=1.4):
         choices_weights = [
             (child.wins / child.visits) + c * math.sqrt((math.log(self.visits) / child.visits))
@@ -40,8 +43,9 @@ class Agent:
         self.size = size
         self.modes = ["minimax", "alphabeta", "montecarlo"]
 
+    #Minimax algorithm implementation
     def minimax(self, state, depth, is_maximizing):
-        if state.is_terminal() or depth == 0:
+        if state.is_terminal() or depth == 0: #using depth to limit search
             return state.evaluate(self.name)
         
         if is_maximizing: #If it's the AI's turn
@@ -60,9 +64,10 @@ class Agent:
                 value = self.minimax(new_state, depth - 1, True)
                 best_value = min(best_value, value)
             return best_value
-        
+
+    #Alpha-Beta pruning implementation    
     def alphabeta(self, state, depth, alpha, beta, is_maximazing):
-        if state.is_terminal() or depth == 0:
+        if state.is_terminal() or depth == 0: #using depth to limit search
             return state.evaluate(self.name)
         
         if is_maximazing:
@@ -87,7 +92,8 @@ class Agent:
                 if beta <= alpha:   #prune
                     break
             return best_value
-        
+
+    #Perform a random rollout for MCTS, returning the evaluation score    
     def rollout(self, state):
 
         current_state = copy.deepcopy(state)
@@ -101,6 +107,7 @@ class Agent:
         
         return current_state.evaluate(self.name)
 
+    #Select move based on chosen mode
     def move(self, state, mode="minimax"):
         if mode == "minimax":
             best_value = float('-inf')
@@ -132,11 +139,11 @@ class Agent:
             for t in range(3000): # Number of simulations
                 node = root
 
-                # Selection
+                # Selection (traverse the tree)
                 while node.is_fully_expanded() and not node.state.is_terminal():
                     node = node.best_child()
                 
-                # Expansion
+                # Expansion (expand the node)
                 if node.moves and not node.state.is_terminal():
                     state_copy = copy.deepcopy(state)
                     move = node.moves.pop()
@@ -145,16 +152,20 @@ class Agent:
                     node.children.append(child_node)
                     node = child_node
                 
-                # Simulation
+                # Simulation (rollout)
                 result = self.rollout(node.state)
                 
-                # Backpropagation
+                # Backpropagation (update the tree)
                 while node is not None:
                     node.visits += 1
                     node.wins += result
                     node = node.parent
             # Choose the move with the most visits
             return root.best_child(c=0).move
+    
+    #Check if the player has won
+    def win(self, state):
+        return True if state.evaluate(self.name) > 0 else False
     
     def __str__(self):
         out = f"Agent Name: {self.name}\nGrid Size: {self.size[0]}x{self.size[1]}\nModes: {self.modes}"
