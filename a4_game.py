@@ -19,11 +19,17 @@ import pygame
 import time
 import sys
 import threading #only for hard mode grid generation at the moment
+import pygame.mixer_music as music
+
 
 
 #PYGAME SETUP
 pygame.init()
 pygame.mixer.init()
+music.load('Hinger.WAV')
+music.set_endevent(pygame.USEREVENT)
+pygame.mixer.music.set_volume(0.5)
+music.play(-1)  #Play the music indefinitely
 SCREEN_WIDTH, SCREEN_HEIGHT = 1000,700
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Hinger Game")
@@ -36,6 +42,7 @@ clock = pygame.time.Clock()
 #Sounds
 try:
     pop_sound = pygame.mixer.Sound("Pop.mp3")
+    pop_sound.set_volume(0.4)
 except pygame.error:
     print("Pop.mp3 not found")
     pop_sound = None
@@ -447,10 +454,10 @@ def tester():
             print("\nMODE 1: HUMAN VS HUMAN")
             name1 = get_text_input("Enter Player 1 Name: ") or "Player 1"
             if len(name1) > 10:
-                name1 = name1[:10] #limit name length
+                name1 = name1[:10] #limit name length to 10 chars
             name2 = get_text_input("Enter Player 2 Name: ") or "Player 2"
             if len(name2) > 10:
-                name2 = name2[:10] #limit name length
+                name2 = name2[:10] #limit name length to 10 chars
             players = [name1, name2]
             #winner = play(copy.deepcopy(game_state),name1, name2)
             #play_again()
