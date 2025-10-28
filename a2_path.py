@@ -60,19 +60,16 @@ def path_DFS(start, end):
     stack = [(copy.deepcopy(start), [])]
     visited = set()
     visited.add(tuple(map(tuple, start))) #convert to tuple as it is hashable now
+
+    #Validation to confirm there is not already a hinger in the states
+    if State(start).numHingers() > 0 or State(end).numHingers() > 0:
+        return None
     
     while stack:
         (state, path) = stack.pop()
             
-            
         if state == end:
             return path
-
-        # grid = copy.deepcopy(start)
-
-        # for move in path: #apply the path to the grid so far
-        #     grid[move[0]][move[1]] -= 1
-        #btw this remakes the grid each time, we dont need this i think
 
         for move in State(state).moves():
             new_grid = copy.deepcopy(state)
@@ -116,6 +113,10 @@ def path_dls(start, end, limit):
 
 
 def path_IDDFS(start, end):
+    #Validation to confirm there is not already a hinger in the states
+    if State(start).numHingers() > 0 or State(end).numHingers() > 0:
+        return None
+
     max_depth = sum(map(sum, start)) - sum(map(sum, end)) #maximum depth is the total of moves performed
     for depth in range(max_depth + 1): #try depth from 0 to max_depth
         path = path_dls(start, end, depth)
@@ -138,6 +139,10 @@ def heuristic(current_grid, end_grid):
 def path_astar(start, end):
     start_state = State(start)
     end_state = State(end)
+
+    #Validation to confirm there is not already a hinger in the states
+    if start_state.numHingers() > 0 or end_state.numHingers() > 0:
+        return None
 
     open_list = [(0, 0, [], start_state)]
     heapq.heapify(open_list)
@@ -178,12 +183,13 @@ def path_astar(start, end):
 
     return None
 
+# Function to compare all algorithms in terms of time and memory usage
 def compare():
     start_grid = [
             [1, 1, 1, 0, 2],
             [1, 1, 0, 0, 0],
-            [1, 1, 0, 1, 1],
-            [1, 0, 0, 1, 1]
+            [1, 1, 1, 1, 1],
+            [1, 0, 1, 1, 1]
         ]
     
     goal_grid = [
@@ -262,8 +268,8 @@ def tester():
     start_grid = [
             [1, 1, 1, 0, 2],
             [1, 1, 0, 0, 0],
-            [1, 1, 0, 1, 1],
-            [1, 0, 0, 1, 1]
+            [1, 1, 1, 1, 1],
+            [1, 0, 1, 1, 1]
         ]
     
     goal_grid = [
@@ -292,6 +298,7 @@ def tester():
         else:
             print(f"{name} couldn't find a safe path.")
 
+    print("\n\nTesting Minsafe Algorithm:")
     minsafe = min_safe(start_grid, goal_grid)
     if minsafe:
         total_cost = calculate_path_cost(start_grid, minsafe)
