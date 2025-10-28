@@ -18,7 +18,7 @@ import copy
 import pygame
 import time
 import sys
-import threading
+import threading #only for hard mode grid generation at the moment
 
 
 #PYGAME SETUP
@@ -33,7 +33,7 @@ font_large = pygame.font.Font("freesansbold.ttf", 70)
 font_gen = pygame.font.Font("freesansbold.ttf", 40)
 clock = pygame.time.Clock()
 
-
+#Sounds
 try:
     pop_sound = pygame.mixer.Sound("Pop.mp3")
 except pygame.error:
@@ -54,12 +54,11 @@ except pygame.error:
 
 #colours
 WHITE, BLACK, GRAY = (255, 255, 255), (0, 0, 0), (200, 200, 200)
-BLUE, RED, GREEN = (100, 149, 237), (255, 99, 71), (50, 205, 50)
+BLUE, RED, GREEN = (100, 150, 240), (255, 100, 71), (50, 200, 50)
 CELL_SIZE, MARGIN = 80, 10
 GRID_X_OFFSET, GRID_Y_OFFSET = 100, 150
 
 
-#NEW PYGAME FUNCTIONS
 
 #draws text on screen
 def draw_text(text, font, color, x, y, center=True):
@@ -72,6 +71,7 @@ def draw_text(text, font, color, x, y, center=True):
     screen.blit(text_surface, text_rect)
 
 
+#renders the current game state on the screen
 def draw_board(state):
     draw_text("C O L U M N S", font_small, BLACK, GRID_X_OFFSET + (state.columns * (CELL_SIZE + MARGIN)) / 2, GRID_Y_OFFSET - 27)
     for r in range(state.rows):
@@ -79,16 +79,16 @@ def draw_board(state):
         label = row_label[r] if r<len(row_label) else str(" ")
         draw_text(f"{label} {r}", font_small, BLACK, GRID_X_OFFSET - 30, GRID_Y_OFFSET + r * (CELL_SIZE + MARGIN) + CELL_SIZE / 2 + 30)
         for c in range(state.columns):
-            if r == 0:
+            if r == 0: #draw column numbers at top only once
                 draw_text(str(c), font_small, BLACK, GRID_X_OFFSET + c * (CELL_SIZE + MARGIN) + CELL_SIZE / 2, GRID_Y_OFFSET +10)
             rect = pygame.Rect(GRID_X_OFFSET + c * (CELL_SIZE + MARGIN), GRID_Y_OFFSET + r * (CELL_SIZE + MARGIN) + 30, CELL_SIZE, CELL_SIZE)
-            pygame.draw.rect(screen, GRAY, rect)
-            pygame.draw.rect(screen, BLACK, rect, 2)
+            pygame.draw.rect(screen, GRAY, rect) #background of cell
+            pygame.draw.rect(screen, BLACK, rect, 2) #border of cell
             val = state.grid[r][c]
             if val > 0:
                 draw_text(str(val), font_medium, BLACK, rect.centerx, rect.centery)
 
-#converts mouse coordinates to row and column
+#converts mouse coordinates to row and column when clicked
 def get_clicked(pos, state):
     for r in range(state.rows):
         for c in range(state.columns):
@@ -98,7 +98,7 @@ def get_clicked(pos, state):
             
     return None
 
-
+#displays a menu with options and returns the index of the selected option
 def show_menu(title, options):
     buttons = []
     for i, option_text in enumerate(options):
@@ -125,6 +125,7 @@ def show_menu(title, options):
         clock.tick(30)
 
 
+#takes text input from user when a name is needed
 def get_text_input(input_text):
     input_box = pygame.Rect(SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 - 25, 400, 50)
     user_text = ""
@@ -161,13 +162,14 @@ def draw_move_history(p1moves, p2moves, p1name, p2name, isAIonly):
     draw_text(p1name, font_small, BLUE, panel_rect.left + 70, panel_rect.top + 20)
     draw_text(p2name, font_small, GREEN, panel_rect.left + 200, panel_rect.top + 20)
     pygame.draw.line(screen, BLACK, (panel_rect.centerx, panel_rect.top + 40), (panel_rect.centerx, panel_rect.bottom - 10), 1)
+    #display last 15 moves for each player
     for i, move in enumerate(p1moves[-15:]):
             draw_text(f"{move}", font_small, BLACK, panel_rect.left + 50, panel_rect.top + 60 + i * 20, center=False)
     for i, move in enumerate(p2moves[-15:]):
             draw_text(f"{move}", font_small, BLACK, panel_rect.left + 170, panel_rect.top + 60 + i * 20, center=False)
 
 
-
+#displays the game over screen with the winner/draw and options to play again or quit
 def show_game_over_screen(winner, finalstate, p1moves, p2moves, p1name, p2name, isAIonly):
     play_again_button = pygame.Rect(SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2, 200, 60)
     quit_button = pygame.Rect(SCREEN_WIDTH / 2 + 20, SCREEN_HEIGHT / 2, 200, 60)
@@ -229,7 +231,7 @@ def show_game_over_screen(winner, finalstate, p1moves, p2moves, p1name, p2name, 
 #             print("Invalid Move: Invalid format")
 
 
-
+#MAIN GAME LOOP
 def play(state, agent1, agent2, mode="alphabeta"):
     players = [agent1, agent2]
     current_player_id = 0
@@ -237,7 +239,7 @@ def play(state, agent1, agent2, mode="alphabeta"):
     movehistoryp1, movehistoryp2 = [], []
     isAIonly = isinstance(agent1, Agent) and isinstance(agent2, Agent)
     print("Starting Game\n")
-
+    #loops once per turn until there is a winner or draw
     while winner is None:
         human_move = None
         for event in pygame.event.get():
@@ -267,7 +269,7 @@ def play(state, agent1, agent2, mode="alphabeta"):
         pygame.display.flip()
         clock.tick(30)
 
-
+        #move logic
         move = None
         if is_human_turn:
             move = human_move
@@ -281,11 +283,11 @@ def play(state, agent1, agent2, mode="alphabeta"):
                 draw_text(f"{player_name} is thinking...", font_medium, BLUE, SCREEN_WIDTH / 2, 60)
             else:
                 draw_text(f"{player_name} is thinking...", font_medium, GREEN, SCREEN_WIDTH / 2, 60)
-            pygame.display.flip()
-            move = current_player.move(state, mode=mode) #change between modes
+            pygame.display.flip() #update display to show AI is thinking
+            move = current_player.move(state, mode=mode) #AI makes move
             time.sleep(0.3) #deliberate pause so sound can catch up properly
 
-
+        #apply move
         if move:
             if pop_sound: #play pop sound
                 pop_sound.play()
@@ -340,7 +342,7 @@ def is_safe_for_n_moves(initial_state, max_depth):
                     visited.add(new_grid_tuple)
                     queue.append((State(new_grid), depth + 1))
 
-    return True
+    return True #only reached if no hingers found in n moves
 
 
 #Use threading to make this run on another thread so the main thread isnt blocked
