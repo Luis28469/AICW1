@@ -198,10 +198,10 @@ def show_game_over_screen(winner, finalstate, p1moves, p2moves, p1name, p2name, 
         screen.blit(overlay, (0, 0))
         if winner == p1name:
             final_message = f"{winner} WINS!"
-            draw_text(final_message, font_large, BLUE if winner != "Draw" else BLACK, SCREEN_WIDTH / 2, 190)
+            draw_text(final_message, font_large, BLUE if winner != "Draw" else BLACK, SCREEN_WIDTH / 2, 120)
         elif winner == p2name:
             final_message = f"{winner} WINS!"
-            draw_text(final_message, font_large, GREEN if winner != "Draw" else BLACK, SCREEN_WIDTH / 2, 190)
+            draw_text(final_message, font_large, GREEN if winner != "Draw" else BLACK, SCREEN_WIDTH / 2, 120)
         else:
             final_message = "Draw!"
             draw_text(final_message, font_large, BLACK, SCREEN_WIDTH / 2, 190)
