@@ -31,21 +31,25 @@ class State:
 
         #return "\n".join([" ".join(str(x) for x in row) for row in self.grid])
 
+    #Generate possible moves (generator)
     def moves(self):
         for r in range(self.rows):
             for c in range(self.columns):
                 if self.grid[r][c] > 0:
                     yield (r, c)
     
+    #Determine if there is a winner and return the winner
     def get_winner(self):
         if self.numRegions() > self.startRegions:
             return self.last_move
         
         return None
     
+    #Check if state is terminal
     def is_terminal(self):
         return self.get_winner() is not None or not list(self.moves())
     
+    #Evaluate state for playing algorithms (1 for win, 0 for draw, -1 for loss)
     def evaluate(self, player):
         winner = self.get_winner()
         if winner == player:
@@ -54,6 +58,7 @@ class State:
             return 0
         return -1
     
+    #Make a move on the board
     def make_move(self, r, c, player):
         self.startRegions = self.numRegions()
         if self.grid[r][c] > 0:
@@ -62,6 +67,7 @@ class State:
             return True
         return False
 
+    #Get adjacent cells for a given cell (to help with region and hinger calculations)
     def get_adjacent_cells(self, r, c):
         positions = []
         #Loop through the 3x3 square centered at (r, c)
@@ -76,6 +82,7 @@ class State:
                     positions.append((nr, nc))
         return positions
 
+    #Calculate number of regions in the current state and return it
     def numRegions(self):
         visited = set()
         regions = 0
@@ -99,6 +106,7 @@ class State:
                                 queue.append((nr, nc))
         return regions
 
+    #Calculate number of hingers in the current state and return it
     def numHingers(self):
         initial_regions = self.numRegions()
         hinger = 0
@@ -114,6 +122,7 @@ class State:
                         hinger += 1
         return hinger
 
+    #Calculate the cost of a move based on adjacent active cells
     def get_move_cost(self,move):
         r,c = move
         if self.grid[r][c] == 0:
