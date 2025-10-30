@@ -34,7 +34,7 @@ def get_human_move(state):
         except (ValueError, IndexError):
             print("Invalid Move: Invalid format")
 
-def play(state, agent1, agent2, mode):
+def play(state, agent1, agent2, mode=None):
     #simulates a session
     players = [agent1, agent2]
     current_player_id = 0
