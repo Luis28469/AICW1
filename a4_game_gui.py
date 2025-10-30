@@ -2,7 +2,7 @@
 Hinger Project
 Coursework 001 for: CMP-6058A Artificial Intelligence
 
-Includes the core gameplay loop and GUI
+Includes the core gameplay loop with a GUI
 
 @author: B5 (100530015, 100531901, and 100418808)
 @date:   30/10/2025
